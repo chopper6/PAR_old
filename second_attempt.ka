@@ -3,59 +3,66 @@
 
 /* Signatures */
 
-%agent: PARP(r,a,p,tail) 
-%agent: DNA(r) 
-%agent: NAD(r{f t},a,p,tail) 
+%agent: PARP(root,adenine,pphos,branch,elong,acceptor)  
+%agent: DNA(root) 
+%agent: NAD(root{f t},adenine,pphos,branch,elong,acceptor) 
 %agent: PARG()
-// f,t of NAD are used to denote if it is rooted (true) or not (false) (either to DNA or another NAD)
 
+// f,t of NAD are used to denote if it is rooted (true) or not (false) (either to DNA or another NAD)
+// i.e. {t,f} just used as a proxy for 'bound to anything' that is syntactically more flexible than _
+// currently PARP needs to bind to DNA to be active, however, this doesn't enforce that a PARP actually adds to its own chain and not that of another DNA...just limits # active PARPs...
 
 /* Rules */
-'NP_tail' 		PARP(tail[./1]), NAD(tail[./1],r{f/f}) 						@ 'NP_tail_rate', 'unNP_tail_rate'
 
-'init' 			DNA(r[./1]),PARP(tail[2/.]), NAD(tail[2/.],r[./1]{f/t}) 		@ 'init_rate'
+'NP_acceptor' 	PARP(acceptor[./1]), NAD(acceptor[./1],root{f/f}) 						@ 'NP_acceptor_rate'
+'unNP_acceptor' 	PARP(acceptor[1/.]), NAD(acceptor[1/.]) 						@ 'unNP_acceptor_rate'
 
-'NP_p' 			PARP(p[./1]), NAD(p[./1],r{t/t},tail[./.])  			@ 'NP_p_rate'
-'unNP_p' 		PARP(p[1/.]), NAD(p[1/.]) 								@ 'unNP_p_rate'
+'init' 			DNA(root[./1]),PARP( acceptor[2/.]), NAD(acceptor[2/.],root[./1]{f/t}) 		@ 'init_rate'
 
-'NP_a' 			PARP(a[./1]), NAD(a[./1],r{t/t},tail[./.]) 				@ 'NP_a_rate'
-'unNP_a' 		PARP(a[1/.]), NAD(a[1/.]) 								@ 'unNP_a_rate'
+'NP_p' 			PARP(pphos[./1]), NAD(pphos[./1],root{t/t})  			@ 'NP_p_rate'
+'unNP_p' 		PARP(pphos[1/.],adenine[_/.]), NAD(pphos[1/.],adenine[_/.]) 								@ 'unNP_p_rate'
 
-'elongate' 		PARP(p[1/.],tail[2/.]), NAD(p[1/3],r{t/t}), NAD(tail[2/.],r[./3]{f/t}) @ 'elong_rate'
+'NP_a' 			PARP(adenine[./2],pphos[1/1]), NAD(adenine[./2],pphos[1/1], root{t/t}) 				@ 'catalysis_rate'*20*unNP_a_rate
+'unNP_a' 		PARP(adenine[1/.]), NAD(adenine[1/.]) 								@ 'unNP_a_rate'
 
-'branch' 		PARP(a[1/.],tail[2/.]), NAD(a[1/3],r{t/t}), NAD(tail[2/.],r[./3]{f/t}) @ 'branch_rate'
+'elongate' 		PARP(pphos[1/.],adenine[2/.],acceptor[3/.]), NAD(pphos[1/.],adenine[2/.],root{t/t},elong[./4]), NAD(acceptor[3/.],root[./4]{f/t}) @ 'catalysis_rate'
 
-'cut_note'		NAD(r[_]{t}),PARG() -> NAD(r[.]{f}),PARG()				@ cut_rate
-'clean_a'		NAD(r[./.],a[1/.]), NAD(r[1/.])							@ inf
-'clean_p'		NAD(r[./.],p[1/.]), NAD(r[1/.])							@ inf
+'branch' 		PARP(pphos[1],adenine[.],acceptor[3]), NAD(pphos[1],adenine[.],branch[.]), NAD(acceptor[3],root[.]{f}) -> PARP(pphos[.],acceptor[.],adenine[.]), NAD(pphos[.],adenine[.],branch[4]), NAD(acceptor[.],root[4]{t}) @ 'catalysis_rate'
+
+'cut'		NAD(root[_]{t}),PARG() -> NAD(root[.]{f}),PARG()				@ cut_rate
+'clean_elong'		NAD(root[.],elong[1]), NAD(root[1])	-> NAD(root[.], elong[.]), NAD(root[.])						@ inf
+'clean_branch'		NAD(root[.],branch[1]), NAD(root[1]) -> NAD(root[.],branch[.]), NAD(root[.])						@ inf
 
 /* Variables */
-%var: 'bind_rate' 1.0E-3
-%var: 'unbind_rate' 1.0E-5 
-%var: 'catalyze_rate' 1.0E-2
-%var: 'NP_tail_rate' 1.0E-2
-%var: 'unNP_tail_rate' 1.0E-2
-%var: 'init_rate' 1.0E-2
-%var: 'NP_p_rate' 1.0E-2
-%var: 'unNP_p_rate' 1.0E-2
-%var: 'NP_a_rate' 1.0E-2
-%var: 'unNP_a_rate' 1.0E-2
-%var: 'elong_rate' 1.0E-2
-%var: 'branch_rate' 1.0E-2
-%var: 'cut_rate' 1.0E-2
+// forward/reverse may be wrong
+// Krivine said something about normalizing 1E8 by mols...
+%var: 'base_rate' 1.0E-2
+%var: 'base_fwd' 1.0E+8
+%var: 'base_rev' 1.0E-2
+
+%var: 'catalyze_rate' 1.0E+8
+%var: 'NP_acceptor_rate' base_fwd
+%var: 'unNP_acceptor_rate' base_rev
+%var: 'init_rate' base_fwd
+%var: 'NP_p_rate' base_fwd
+%var: 'unNP_p_rate' base_rev
+%var: 'unNP_a_rate' base_rev*10 //weakly bound //note that NP_a_rate is set based on unNP_a_rate and catalysis_rate
+%var: 'catalysis_rate' 1.0E+8
+%var: 'cut_rate' 1.0E-8 //bind and catalyze
 
 
-%obs: 'Chain_NAD' |NAD(p[1],r[_]), NAD(r[1])|
+%obs: 'Chain_NAD' |NAD(elong[1],root[_]), NAD(root[1])|
 
 // there's a bug if illegal states are seen
 // add some illegal states
-%obs: 'illegal_2' |PARP(tail[1],p[2]), NAD(tail[1],p[2])|
+%obs: 'illegal_1' |PARP(acceptor[1],pphos[2]), NAD(acceptor[1],pphos[2])|
+%obs: 'illegal_2' |PARP(adenine[1]), NAD(adenine[1],pphos[.])|
 
 
 /* Initial conditions */
 // everything starts unbound
 %init: 10 DNA()
-%init: 4 PARP()
+%init: 10 PARP()
 %init: 2000 NAD()
 %init: 10 PARG()
 
