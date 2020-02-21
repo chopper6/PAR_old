@@ -1,0 +1,62 @@
+/* POLY ADP RIBOSE MODEL */
+
+
+/* Signatures */
+
+%agent: PARP(r,a,p,tail) 
+%agent: DNA(r) 
+%agent: NAD(r{f t},a,p,tail) 
+%agent: PARG()
+// f,t of NAD are used to denote if it is rooted (true) or not (false) (either to DNA or another NAD)
+
+
+/* Rules */
+'NP_tail' 		PARP(tail[./1]), NAD(tail[./1],r{f/f}) 						@ 'NP_tail_rate', 'unNP_tail_rate'
+
+'init' 			DNA(r[./1]),PARP(tail[2/.]), NAD(tail[2/.],r[./1]{f/t}) 		@ 'init_rate'
+
+'NP_p' 			PARP(p[./1]), NAD(p[./1],r{t/t},tail[./.])  			@ 'NP_p_rate'
+'unNP_p' 		PARP(p[1/.]), NAD(p[1/.]) 								@ 'unNP_p_rate'
+
+'NP_a' 			PARP(a[./1]), NAD(a[./1],r{t/t},tail[./.]) 				@ 'NP_a_rate'
+'unNP_a' 		PARP(a[1/.]), NAD(a[1/.]) 								@ 'unNP_a_rate'
+
+'elongate' 		PARP(p[1/.],tail[2/.]), NAD(p[1/3],r{t/t}), NAD(tail[2/.],r[./3]{f/t}) @ 'elong_rate'
+
+'branch' 		PARP(a[1/.],tail[2/.]), NAD(a[1/3],r{t/t}), NAD(tail[2/.],r[./3]{f/t}) @ 'branch_rate'
+
+'cut_note'		NAD(r[_]{t}),PARG() -> NAD(r[.]{f}),PARG()				@ cut_rate
+'clean_a'		NAD(r[./.],a[1/.]), NAD(r[1/.])							@ inf
+'clean_p'		NAD(r[./.],p[1/.]), NAD(r[1/.])							@ inf
+
+/* Variables */
+%var: 'bind_rate' 1.0E-3
+%var: 'unbind_rate' 1.0E-5 
+%var: 'catalyze_rate' 1.0E-2
+%var: 'NP_tail_rate' 1.0E-2
+%var: 'unNP_tail_rate' 1.0E-2
+%var: 'init_rate' 1.0E-2
+%var: 'NP_p_rate' 1.0E-2
+%var: 'unNP_p_rate' 1.0E-2
+%var: 'NP_a_rate' 1.0E-2
+%var: 'unNP_a_rate' 1.0E-2
+%var: 'elong_rate' 1.0E-2
+%var: 'branch_rate' 1.0E-2
+%var: 'cut_rate' 1.0E-2
+
+
+%obs: 'Chain_NAD' |NAD(p[1],r[_]), NAD(r[1])|
+
+// there's a bug if illegal states are seen
+// add some illegal states
+%obs: 'illegal_2' |PARP(tail[1],p[2]), NAD(tail[1],p[2])|
+
+
+/* Initial conditions */
+// everything starts unbound
+%init: 10 DNA()
+%init: 4 PARP()
+%init: 2000 NAD()
+%init: 10 PARG()
+
+%mod: ([E] [mod] 5000)=0 do $SNAPSHOT "abc.ka"; repeat [true]
