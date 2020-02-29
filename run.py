@@ -11,7 +11,7 @@ from copy import deepcopy
 # dpi param, std dev param
 # add more init params
 
-params = ({'experiment':'hist', 'repeats':10, 'iterations':100, 'NAD':1000
+params = ({'experiment':'hist', 'repeats':10, 'iterations':100, 'NAD':1000,
 	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':False})
 
 

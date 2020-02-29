@@ -33,6 +33,7 @@ def get_features(snap) :
 		for i in range(int(info['number'])):
 			infos += [info]
 
+
 	return infos
 
 
