@@ -3,11 +3,10 @@ from util import rng
 import kappy
 from copy import deepcopy
 
-# TODO: 
-# add more init params
 
 params = ({'experiment':'hist', 'repeats':10, 'time':100, 'timestamp':util.timestamp(), 
-	'NAD':1000, 'PARG':200, 'DNA': 20, 'PARP':20,'PARG_rate':'1E-8', 
+	'NAD':1000, 'PARG':200, 'DNA': 20, 'PARP':20,
+	'base_fwd':1.0E+8, 'base_rev':1.0E-2, 'catalyze_rate':1.0E+8, 'cut_rate':1.0E-8, 'elong_boost':1.0E+1,
 	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':False, 'dpi':300, 'std_devs':3})
 
 
@@ -89,6 +88,9 @@ def run_sim(params):
 
 	for species in ['NAD','DNA','PARP','PARG']:
 		model = model.replace("init: _ " + species, "init: " + str(params[species]) + " " + species)
+
+	for rate in ['base_rate','base_fwd','catalysis_rate','cut_rate','elong_boost']:
+		model = model.replace("'" + rate + "' _", "'" + rate + "' " + params[rate])
 
 	client.add_model_string(model)
 	client.project_parse()
