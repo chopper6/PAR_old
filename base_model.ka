@@ -36,7 +36,7 @@
 
 /* Variables */
 
-/ a _ will be replaced in the python script
+/* a _ will be replaced in the python script */
 
 %var: 'base_fwd' _
 %var: 'base_rev' _
