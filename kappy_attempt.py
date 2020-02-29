@@ -2,12 +2,12 @@ import kappy
 
 client = kappy.KappaStd()
 
-with open('second_attempt.ka', 'r') as file : 
+with open('base_model.ka', 'r') as file : 
 	model = file.read()
 
 client.add_model_string(model)
 client.project_parse()
-sim_params = kappy.SimulationParameter(pause_condition="[T] > 100",plot_period=1)
+sim_params = kappy.SimulationParameter(pause_condition="[T] > " + str(params['iterations']),plot_period=1)
 client.simulation_start(sim_params)
 client.wait_for_simulation_stop()
 results = client.simulation_plot()
@@ -36,7 +36,7 @@ def get_infos(snap) :
 		info['number'] = graph[0] #number of that kind of graph
 		info['branching_ratio'] = get_branch_number(graph)/info['size']
 		infos.append(info)
-	print(infos)
+	return infos
 #print(snap)
 #print(len(snap['snapshot_agents'][0][1]))
 get_infos(snap)

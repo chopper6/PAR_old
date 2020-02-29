@@ -2,14 +2,51 @@ import util, plot
 from util import rng
 import numpy as np, scipy.stats as st
 
+DEBUG = True
+
+################################ EXTRACTING KAPPA SNAPSHOT ######################################
+
+
+def get_branch_number(graph) :
+	counter = 0
+	for agent in graph[1] :
+		for node_site in agent['node_sites']:
+			if node_site['site_name'] == 'branch' and node_site['site_type'][1]['port_links'] :
+				#if branch site is not empty
+				counter +=1
+	return counter
+
+def get_features(snap) :
+	graphs = snap['snapshot_agents']
+	infos = [] 
+	for graph in graphs : #run through the graphs
+		if graph[1][0]['node_type'] == 'PARG' :
+			continue
+		info = {}
+		info['size'] = len(graph[1]) # number of agents
+		info['number'] = graph[0] #number of that kind of graph
+		info['branching_ratio'] = get_branch_number(graph)/info['size']
+		if info['size'] != 1:
+			infos.append(info)
+	return infos
+
+
+
+
+################################# ORGANIZING DATA ##################################
 
 def extract_one(feature, sshot):
+	data = get_features(sshot)
 	if name == 'size':
-		feat = ['some','fn','of','sshot']
+		feat = [data[i]['size'] for i in rng(data)] 
 	elif name == 'branching ratio':
-		feat = []
+		feat = [data[i]['branching_ratio'] for i in rng(data)] 
 	else: 
 		assert(False) #feature name not recognized
+
+	if debug: 
+		for i in rng(data):
+			assert(data[i]['number']==1)
 
 	return feat
 

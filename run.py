@@ -1,15 +1,13 @@
 import util, plot
 from util import rng
-
+import kappy
 
 # TODO: 
-# lots of debug
-# merge sams part
 # pickle more raw data, also need to pass the varied param somehow
 # Add README
 # params -> ka, by string rewriting (.replace)
 
-params = ({'experiment':'hist', 'repeats':10, 
+params = ({'experiment':'hist', 'repeats':10, 'iterations':100,
 	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':False})
 
 
@@ -69,13 +67,32 @@ def sweep():
 		for r in rng(params['repeats']):
 
 			sshot = run_sim(params)
-			features.extract_stats(repeats_data, feature_names)
+			features.extract_stats(repeats_data, feature_names,sshot)
 		features.merge_repeats(merged_data, repeats_data, feature_names)
 		
 	util.pickle_it(merged_data, params) 
 
 	plot.param_sweep(merged_data,params,NADs,'NAD',feature_names) #features * stats imgs
 
+###################################### KAPPY ###############################################
 
+def run_sim(params):
+	client = kappy.KappaStd()
+
+	with open('base_model.ka', 'r') as file : 
+		model = file.read()
+
+	client.add_model_string(model)
+	client.project_parse()
+	sim_params = kappy.SimulationParameter(pause_condition="[T] > " + str(params['iterations']),plot_period=params['iterations'])
+	client.simulation_start(sim_params)
+	client.wait_for_simulation_stop()
+	results = client.simulation_plot()
+	snaps = client.simulation_snapshots()
+	snap  = client.simulation_snapshot(snaps['snapshot_ids'][0])
+	client.simulation_delete()
+	client.shutdown()
+
+	return snap
 
 main()
