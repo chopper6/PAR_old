@@ -1,0 +1,9 @@
+
+
+Usage:
+python3 run.py
+
+May need to add directories: /output/, /output/pickles/
+
+python requirements:
+kappy, numpy, scipy, matplotlib, 

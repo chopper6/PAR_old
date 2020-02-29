@@ -4,15 +4,10 @@ import kappy
 from copy import deepcopy
 
 # TODO: 
-# pickle more raw data, also need to pass the varied param somehow
-# pickle subdirectory
-# Add README
-# handle when data[i]['number'] != 1, extract_one in features
-# dpi param, std dev param
 # add more init params
 
 params = ({'experiment':'hist', 'repeats':10, 'iterations':100, 'NAD':1000,
-	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':False})
+	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':False, 'dpi':300, 'std_devs':3})
 
 
 def main():
@@ -33,6 +28,7 @@ def hist():
 	# compares 2 runs, no averaging
 	NADs = [10,10000]
 
+	all_params = []
 	feature_names = ['size', 'branching ratio']
 
 	shots = []
@@ -42,8 +38,9 @@ def hist():
 		sshot = run_sim(params)
 		for feat in feature_names:
 			data[feat] += [features.extract_one(feat, sshot)]
+		all_params += [params]
 		
-	util.pickle_it(params, data) 
+	util.pickle_it(all_params, data) 
 
 	plot.hist_first_and_last(data,params,feature_names) # 1 img per feature
 
@@ -54,6 +51,7 @@ def sweep():
 	# compares many parameters and averages each over many runs
 	print("\nRunning parameter sweep with repeats.\n")
 	NADs = [10**i for i in range(4)]
+	all_params = []
 
 	feature_names = ['size', 'branching ratio']
 
@@ -73,8 +71,9 @@ def sweep():
 			features.extract_stats(repeats_data, feature_names,sshot)
 
 		features.merge_repeats(merged_data, repeats_data, feature_names)
+		all_params += [params]
 		
-	util.pickle_it(params, merged_data) 
+	util.pickle_it(all_params, merged_data) 
 
 	plot.param_sweep(merged_data,params,NADs,'NAD',feature_names) #features * stats imgs
 
