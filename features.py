@@ -93,8 +93,11 @@ def merge_repeats(merged_data, repeats_data, feature_names):
 			intervals, stats = [conf_interval1, conf_interval2, conf_interval3], [['top1','btm1'],['top2','btm2'],['top3','btm3']]
 			for i in util.rng(intervals):
 				interval, stat = intervals[i], stats[i]
-				a_trim=a[a>interval[0]]
-				a_trimd=a_trim[a_trim<interval[1]]
+				a_trimd=[]
+				for ele in a:
+					if ele > interval[0] and ele < interval[1]:
+						a_trimd+=[ele] 
+
 				if np.count_nonzero(a_trimd) == 0:
 					conf_min, conf_max = 0,0
 				else:

@@ -19,8 +19,8 @@ def hist_first_and_last(data, params, feature_names, labels):
 	for feature in feature_names:
 		x1,x2 = data[feature][0],data[feature][-1]
 		fig = plt.figure(figsize=(12,8))
-		plt.hist(x1, facecolor='red', alpha=0.75) #normed=1 
-		plt.hist(x2, facecolor='blue', alpha=0.75) #normed=1 
+		plt.hist(x1, facecolor='red', alpha=0.5) #normed=1 
+		plt.hist(x2, facecolor='blue', alpha=0.5) #normed=1 
 		plt.legend(labels, fontsize=20)
 
 		finish_plot(params,'histo_' + feature, feature,'counts')

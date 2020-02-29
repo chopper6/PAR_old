@@ -4,10 +4,10 @@ import kappy
 from copy import deepcopy
 
 
-params = ({'experiment':'hist', 'repeats':10, 'time':100, 'timestamp':util.timestamp(), 
+params = ({'experiment':'hist', 'repeats':40, 'time':100, 'timestamp':util.timestamp(), 
 	'NAD':1000, 'PARG':200, 'DNA': 20, 'PARP':20,
 	'base_fwd':1.0E+8, 'base_rev':1.0E-2, 'catalysis_rate':1.0E+8, 'cut_rate':1.0E-8,
-	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':True, 'dpi':300, 'std_devs':3})
+	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':True, 'dpi':300, 'std_devs':2})
 
 
 def main():
@@ -51,7 +51,7 @@ def hist():
 def sweep():
 	# compares many parameters and averages each over many runs
 	print("\nRunning parameter sweep with repeats.\n")
-	NADs = [10**i for i in range(4)]
+	NADs = [2**i for i in range(20)]
 	all_params = []
 
 	feature_names = ['size', 'branching ratio']
