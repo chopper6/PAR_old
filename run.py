@@ -27,14 +27,15 @@ def hist():
 	print("\nComparing two simulations using histogram.\n")
 	# compares 2 runs, no averaging
 	NADs = [1000,10000]
+	labels = ['[NAD] = ' + str(NADs[0]), '[NAD] = ' + str(NADs[1])]
 
 	all_params = []
 	feature_names = ['size', 'branching ratio']
 
 	shots = []
 	data = {n:[] for n in feature_names}
-	for nad in NADs:
-		params['NAD'] = nad
+	for i in rng(NADs):
+		params['NAD'] = NADs[i]
 		sshot = run_sim(params)
 		for feat in feature_names:
 			data[feat] += [features.extract_one(feat, sshot)]
@@ -42,7 +43,7 @@ def hist():
 		
 	util.pickle_it(all_params, data) 
 
-	plot.hist_first_and_last(data,params,feature_names) # 1 img per feature
+	plot.hist_first_and_last(data,params,feature_names, labels) # 1 img per feature
 
 
 
