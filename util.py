@@ -35,7 +35,7 @@ def rng(x):
     return range(len(x))
 
 def avg(x):
-	return sum(x)/len(x)
+	return sum(x)/len(x) if len(x)!=0 else 0
 
 def avg_by_key(X,key):
 	summ = 0
