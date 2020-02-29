@@ -27,7 +27,7 @@ def main():
 def hist():
 	print("\nComparing two simulations using histogram.\n")
 	# compares 2 runs, no averaging
-	NADs = [10,10000]
+	NADs = [1000,10000]
 
 	all_params = []
 	feature_names = ['size', 'branching ratio']
