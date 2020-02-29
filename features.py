@@ -24,7 +24,7 @@ def get_features(snap) :
 			continue
 		info = {}
 
-		size = graph[0]
+		size = len(graph[1])
 		if size != 1:
 			info['size'] = len(graph[1]) # number of agents
 			info['number'] = graph[0] #number of that kind of graph
