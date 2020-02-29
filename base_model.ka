@@ -23,7 +23,7 @@
 
 'unNP_p' 		PARP(pphos[1/.],adenine[_/.]), NAD(pphos[1/.],adenine[_/.]) 								@ 'unNP_p_rate'
 
-'NP_a' 			PARP(adenine[./2],pphos[1/1]), NAD(adenine[./2],pphos[1/1], root{t/t}) 				@ 'catalysis_rate'*20*unNP_a_rate*'elong_boost'
+'NP_a' 			PARP(adenine[./2],pphos[1/1]), NAD(adenine[./2],pphos[1/1], root{t/t}) 				@ 'catalysis_rate'*20*unNP_a_rate
 'unNP_a' 		PARP(adenine[1/.]), NAD(adenine[1/.]) 								@ 'unNP_a_rate'
 
 'elongate' 		PARP(pphos[1/.],adenine[2/.],acceptor[3/.]), NAD(pphos[1/.],adenine[2/.],root{t/t},elong[./4]), NAD(acceptor[3/.],root[./4]{f/t}) @ 'catalysis_rate'
