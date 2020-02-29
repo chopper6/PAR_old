@@ -55,7 +55,6 @@ def extract_one(name, sshot):
 def extract_stats(data, feature_names, sshot):
 	for name in feature_names:
 		feat = extract_one(name, sshot)
-
 		if feat != []:
 
 			data[name]['avg'] += [util.avg(feat)]
