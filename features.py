@@ -24,13 +24,15 @@ def get_features(snap) :
 			continue
 		info = {}
 
-
+		size = graph[0]
+		if size != 1:
+			info['size'] += [len(graph[1])] # number of agents
+			info['number'] += [graph[0]] #number of that kind of graph
+			info['branching_ratio'] += [get_branch_number(graph)/info['size']]
+			
 		for i in range(int(info['number'])):
-		info['size'] = len(graph[1]) # number of agents
-		info['number'] = graph[0] #number of that kind of graph
-		info['branching_ratio'] = get_branch_number(graph)/info['size']
-		if info['size'] != 1:
-			infos.append(info)
+			infos += [info]
+
 	return infos
 
 
@@ -43,7 +45,7 @@ def extract_one(name, sshot):
 	if name == 'size':
 		feat = [data[i]['size'] for i in rng(data)] 
 	elif name == 'branching ratio':
-		feat = [data[i]['branching_ratio'] for i in rng(data)] 
+		feat = [data[i]['branching ratio'] for i in rng(data)] 
 	else: 
 		assert(False) #feature name not recognized
 
