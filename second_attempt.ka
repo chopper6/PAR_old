@@ -19,19 +19,20 @@
 
 'init' 			DNA(root[./1]),PARP( acceptor[2/.]), NAD(acceptor[2/.],root[./1]{f/t}) 		@ 'init_rate'
 
-'NP_p' 			PARP(pphos[./1]), NAD(pphos[./1],root{t/t})  			@ 'NP_p_rate'
+'NP_p' 			PARP(pphos[.]), NAD(pphos[.],root{t},elong[.]) -> PARP(pphos[1]), NAD(pphos[1],root{t},elong[.])  			@ 'NP_p_rate'
+
 'unNP_p' 		PARP(pphos[1/.],adenine[_/.]), NAD(pphos[1/.],adenine[_/.]) 								@ 'unNP_p_rate'
 
-'NP_a' 			PARP(adenine[./2],pphos[1/1]), NAD(adenine[./2],pphos[1/1], root{t/t}) 				@ 'catalysis_rate'*20*unNP_a_rate
+'NP_a' 			PARP(adenine[./2],pphos[1/1]), NAD(adenine[./2],pphos[1/1], root{t/t}) 				@ 'catalyze_rate'*20*unNP_a_rate*'artificial_boost'
 'unNP_a' 		PARP(adenine[1/.]), NAD(adenine[1/.]) 								@ 'unNP_a_rate'
 
-'elongate' 		PARP(pphos[1/.],adenine[2/.],acceptor[3/.]), NAD(pphos[1/.],adenine[2/.],root{t/t},elong[./4]), NAD(acceptor[3/.],root[./4]{f/t}) @ 'catalysis_rate'
+'elongate' 		PARP(pphos[1/.],adenine[2/.],acceptor[3/.]), NAD(pphos[1/.],adenine[2/.],root{t/t},elong[./4]), NAD(acceptor[3/.],root[./4]{f/t}) @ 'artificial_boost'*'catalysis_rate'
 
-'branch' 		PARP(pphos[1],adenine[.],acceptor[3]), NAD(pphos[1],adenine[.],branch[.]), NAD(acceptor[3],root[.]{f}) -> PARP(pphos[.],acceptor[.],adenine[.]), NAD(pphos[.],adenine[.],branch[4]), NAD(acceptor[.],root[4]{t}) @ 'catalysis_rate'
+'branch' 		PARP(pphos[1],adenine[.],acceptor[3]), NAD(pphos[1],adenine[.],branch[.],elong[.]), NAD(acceptor[3],root[.]{f}) -> PARP(pphos[.],acceptor[.],adenine[.]), NAD(pphos[.],adenine[.],branch[4],elong[.]), NAD(acceptor[.],root[4]{t}) @ 'catalysis_rate'
 
 'cut'		NAD(root[_]{t}),PARG() -> NAD(root[.]{f}),PARG()				@ cut_rate
-'clean_elong'		NAD(root[.],elong[1]), NAD(root[1])	-> NAD(root[.], elong[.]), NAD(root[.])						@ inf
-'clean_branch'		NAD(root[.],branch[1]), NAD(root[1]) -> NAD(root[.],branch[.]), NAD(root[.])						@ inf
+'clean_elong'		NAD(root[.],elong[1]), NAD(root[1]{t})	-> NAD(root[.], elong[.]), NAD(root[.]{f})						@ inf
+'clean_branch'		NAD(root[.],branch[1]), NAD(root[1]{t}) -> NAD(root[.],branch[.]), NAD(root[.]{f})						@ inf
 
 /* Variables */
 // forward/reverse may be wrong
@@ -48,7 +49,8 @@
 %var: 'unNP_p_rate' base_rev
 %var: 'unNP_a_rate' base_rev*10 //weakly bound //note that NP_a_rate is set based on unNP_a_rate and catalysis_rate
 %var: 'catalysis_rate' 1.0E+8
-%var: 'cut_rate' 1.0E-8 //bind and catalyze
+%var: 'cut_rate' 1.0E-8 //PARG bind and catalyze
+%var: 'artificial_boost' 1.0E+1
 
 
 %obs: 'Chain_NAD' |NAD(elong[1],root[_]), NAD(root[1])|
@@ -64,6 +66,6 @@
 %init: 10 DNA()
 %init: 10 PARP()
 %init: 2000 NAD()
-%init: 10 PARG()
+%init: 200 PARG()
 
 %mod: ([E] [mod] 5000)=0 do $SNAPSHOT "abc.ka"; repeat [true]
