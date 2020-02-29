@@ -55,22 +55,24 @@ def extract_one(name, sshot):
 def extract_stats(data, feature_names, sshot):
 	for name in feature_names:
 		feat = extract_one(name, sshot)
-		data[name]['avg'] += [util.avg(feat)]
-		if util.avg != 0:
-			iod = util.var(feat)/util.avg(feat)
-		else:
-			iod = 0
-		data[name]['iod'] += [iod]
-		max1 = max(feat)
-		feat.remove(max1)
-		max2 = max(feat)
-		data[name]['max'] += [max1]
+		if feat != []:
 
-		if max1==0:
-			ratio = 0
-		else: 
-			ratio = (max1 - max2)/max1
-		data[name]['1:2'] += [ratio]
+			data[name]['avg'] += [util.avg(feat)]
+			if util.avg != 0:
+				iod = util.var(feat)/util.avg(feat)
+			else:
+				iod = 0
+			data[name]['iod'] += [iod]
+			max1 = max(feat)
+			feat.remove(max1)
+			max2 = max(feat)
+			data[name]['max'] += [max1]
+
+			if max1==0:
+				ratio = 0
+			else: 
+				ratio = (max1 - max2)/max1
+			data[name]['1:2'] += [ratio]
 
 
 def merge_repeats(merged_data, repeats_data, feature_names):
