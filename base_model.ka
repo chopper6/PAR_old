@@ -65,7 +65,7 @@
 // everything starts unbound
 %init: 10 DNA()
 %init: 10 PARP()
-%init: 2000 NAD()
+%init: _ NAD()
 %init: 200 PARG()
 
 %mod: ([E] [mod] 5000)=0 do $SNAPSHOT "abc.ka"; repeat [true]
