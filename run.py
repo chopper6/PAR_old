@@ -7,7 +7,7 @@ from util import rng
 # merge sams part
 # pickle more raw data, also need to pass the varied param somehow
 # Add README
-# params -> ka
+# params -> ka, by string rewriting (.replace)
 
 params = ({'experiment':'hist', 'repeats':10, 
 	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':False})
