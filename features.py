@@ -28,7 +28,7 @@ def get_features(snap) :
 		if size != 1:
 			info['size'] = len(graph[1]) # number of agents
 			info['number'] = graph[0] #number of that kind of graph
-			info['branching_ratio'] = get_branch_number(graph)/info['size']
+			info['branching ratio'] = get_branch_number(graph)/info['size']
 			
 		for i in range(int(info['number'])):
 			infos += [info]
