@@ -18,7 +18,7 @@ plt.rcParams["font.family"] = "serif"
 def hist_first_and_last(data, params, feature_names):
 	for feature in feature_names:
 		x1,x2 = data[feature][0],data[feature][-1]
-		fig = plt.figure((12,8))
+		fig = plt.figure(figsize=(12,8))
 		plt.hist(x1, facecolor='green', alpha=0.75) #normed=1 
 		plt.hist(x2, facecolor='blue', alpha=0.75) #normed=1 
 		plt.legend() #works auto?
@@ -27,6 +27,7 @@ def hist_first_and_last(data, params, feature_names):
 
 
 def param_sweep_one(Y, params, variable_values, title, xlabel, ylabel, std_devs = 3):
+	fig = plt.figure(figsize=(12,8))
 	y_avg = Y['avg']
 	if std_devs==1:
 		top,btm = Y['top1'], Y['btm1']
@@ -37,14 +38,13 @@ def param_sweep_one(Y, params, variable_values, title, xlabel, ylabel, std_devs 
 	else:
 		assert(False) #unrecognized # std_devs
 
-	y_max, y_min = np.array(dataset.vals[y_key]['max']), np.array(dataset.vals[y_key]['min'])
 	plt.plot(variable_values,y_avg,alpha=.8, linewidth=2, color='blue')
-	plt.fill_between(variable_values,top,btm,alpha=.2, color=c)
+	plt.fill_between(variable_values,top,btm,alpha=.2, color='blue')
 
 	finish_plot(params,'Splot_' + title, xlabel, ylabel)
 
 
-def param_sweep_all(data, params, variable_values, variable_name, feature_names):
+def param_sweep(data, params, variable_values, variable_name, feature_names):
 	for feature in feature_names:
 		for metric in data[feature].keys():
 			title, ylabel = variable_name + '_x_' + '_' + feature + '_' + metric, feature + '_' + metric
@@ -55,7 +55,7 @@ def param_sweep_all(data, params, variable_values, variable_name, feature_names)
 def finish_plot(params, title, xlabel, ylabel):
 
 	plt.xlabel(xlabel, fontsize=20)
-	plt.yalbel(ylabel, fontsize=20)
+	plt.ylabel(ylabel, fontsize=20)
 	plt.xticks(fontsize=12)
 	plt.yticks(fontsize=12)
 

@@ -35,7 +35,7 @@ def get_features(snap) :
 
 ################################# ORGANIZING DATA ##################################
 
-def extract_one(feature, sshot):
+def extract_one(name, sshot):
 	data = get_features(sshot)
 	if name == 'size':
 		feat = [data[i]['size'] for i in rng(data)] 
@@ -43,10 +43,6 @@ def extract_one(feature, sshot):
 		feat = [data[i]['branching_ratio'] for i in rng(data)] 
 	else: 
 		assert(False) #feature name not recognized
-
-	if debug: 
-		for i in rng(data):
-			assert(data[i]['number']==1)
 
 	return feat
 
@@ -74,13 +70,13 @@ def extract_stats(data, feature_names, sshot):
 
 def merge_repeats(merged_data, repeats_data, feature_names):
 	for name in feature_names:
-		for metrics in repeats_data[name].keys():
+		for metric in repeats_data[name].keys():
 
-			merged_data[name][metric]['avg'] = util.avg(repeats_data[name][metric])
+			#merged_data[name][metric]['avg'] = util.avg(repeats_data[name][metric])
 
 			a = np.array(repeats_data[name][metric])
 			mean = np.mean(a)
-			merged_data[name][metric]['avg'] = mean
+			merged_data[name][metric]['avg'] += [mean]
 
 
 			conf_interval1 = st.t.interval(0.68, len(a)-1, loc=mean, scale=st.sem(a)) #1 standard devs
@@ -89,14 +85,16 @@ def merge_repeats(merged_data, repeats_data, feature_names):
 
 			intervals, stats = [conf_interval1, conf_interval2, conf_interval3], [['top1','btm1'],['top2','btm2'],['top3','btm3']]
 			for i in util.rng(intervals):
-				interval, stat = intervals[i], stats[i]:
+				interval, stat = intervals[i], stats[i]
 				a_trim=a[a>interval[0]]
 				a_trimd=a_trim[a_trim<interval[1]]
 				if np.count_nonzero(a_trimd) == 0:
 					conf_min, conf_max = 0,0
 				else:
 					conf_min, conf_max = a_trimd.min(), a_trimd.max()
-				merged_data[name][metric][stat[0]] = conf_max
-				merged_data[name][metric][stat[1]] = conf_min
+				merged_data[name][metric][stat[0]] += [conf_max]
+				merged_data[name][metric][stat[1]] += [conf_min]
+
+			#print('features:',metric,merged_data[name][metric])
 
 

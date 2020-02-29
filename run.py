@@ -1,13 +1,14 @@
-import util, plot
+import util, plot, features
 from util import rng
 import kappy
+from copy import deepcopy
 
 # TODO: 
 # pickle more raw data, also need to pass the varied param somehow
 # Add README
 # params -> ka, by string rewriting (.replace)
 
-params = ({'experiment':'hist', 'repeats':10, 'iterations':100,
+params = ({'experiment':'sweep', 'repeats':3, 'iterations':100,
 	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':False})
 
 
@@ -40,7 +41,7 @@ def hist():
 		for feat in feature_names:
 			data[feat] += [features.extract_one(feat, sshot)]
 		
-	util.pickle_it(data, params) 
+	util.pickle_it(params, data) 
 
 	plot.hist_first_and_last(data,params,feature_names) # 1 img per feature
 
@@ -52,10 +53,10 @@ def sweep():
 	print("\nRunning parameter sweep with repeats.\n")
 	NADs = [10**i for i in range(4)]
 
-	feature_names = ['size', 'branch ratio']
+	feature_names = ['size', 'branching ratio']
 
 	stats = {'avg':[], 'top1':[], 'top2':[],'top3':[], 'btm1':[],'btm2':[],'btm3':[]}
-	merged_data = {n:{'avg':stats.copy(), 'max':stats.copy(), 'iod':stats.copy(),'1:2':stats.copy()} for n in feature_names}
+	merged_data = {n:{'avg':deepcopy(stats), 'max':deepcopy(stats), 'iod':deepcopy(stats),'1:2':deepcopy(stats)} for n in feature_names}
 
 
 	shots = []
@@ -64,13 +65,14 @@ def sweep():
 		repeats_data = {n:{'avg':[], 'max':[], 'iod':[],'1:2':[]} for n in feature_names}
 		# Format: data[feature_name][stat]. Example: data['size']['avg']
 
-		for r in rng(params['repeats']):
+		for r in range(params['repeats']):
 
 			sshot = run_sim(params)
 			features.extract_stats(repeats_data, feature_names,sshot)
+
 		features.merge_repeats(merged_data, repeats_data, feature_names)
 		
-	util.pickle_it(merged_data, params) 
+	util.pickle_it(params, merged_data) 
 
 	plot.param_sweep(merged_data,params,NADs,'NAD',feature_names) #features * stats imgs
 
