@@ -6,7 +6,8 @@ from copy import deepcopy
 # TODO: 
 # add more init params
 
-params = ({'experiment':'hist', 'repeats':10, 'iterations':100, 'NAD':1000,
+params = ({'experiment':'hist', 'repeats':10, 'time':100, 'timestamp':util.timestamp(), 
+	'NAD':1000, 'PARG':200, 'DNA': 20, 'PARP':20,'PARG_rate':'1E-8', 
 	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':False, 'dpi':300, 'std_devs':3})
 
 
@@ -86,11 +87,12 @@ def run_sim(params):
 	with open('base_model.ka', 'r') as file : 
 		model = file.read()
 
-	model = model.replace("init: _ NAD()", "init: " + str(params['NAD']) + " NAD()")
+	for species in ['NAD','DNA','PARP','PARG']:
+		model = model.replace("init: _ " + species, "init: " + str(params[species]) + " " + species)
 
 	client.add_model_string(model)
 	client.project_parse()
-	sim_params = kappy.SimulationParameter(pause_condition="[T] > " + str(params['iterations']),plot_period=params['iterations'])
+	sim_params = kappy.SimulationParameter(pause_condition="[T] > " + str(params['time']),plot_period=params['iterations'])
 	client.simulation_start(sim_params)
 	client.wait_for_simulation_stop()
 	results = client.simulation_plot()
