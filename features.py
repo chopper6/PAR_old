@@ -101,7 +101,7 @@ def merge_repeats(merged_data, repeats_data, feature_names):
 				if np.count_nonzero(a_trimd) == 0:
 					conf_min, conf_max = 0,0
 				else:
-					conf_min, conf_max = a_trimd.min(), a_trimd.max()
+					conf_min, conf_max = min(a_trimd), max(a_trimd)
 				merged_data[name][metric][stat[0]] += [conf_max]
 				merged_data[name][metric][stat[1]] += [conf_min]
 
