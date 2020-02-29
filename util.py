@@ -5,7 +5,7 @@ import numpy as np
 
 
 def pickle_it(params, data):
-	with open(params['out_dir'] + timestamp() + '.pickle','wb') as file:
+	with open(params['out_dir'] + '/pickles/' + timestamp() + '.pickle','wb') as file:
 		data = {'data':data, 'params':params}
 		pickle.dump(data, file) 
 

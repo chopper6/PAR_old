@@ -26,14 +26,14 @@ def hist_first_and_last(data, params, feature_names):
 		finish_plot(params,'histo_' + feature, feature,'counts')
 
 
-def param_sweep_one(Y, params, variable_values, title, xlabel, ylabel, std_devs = 3):
+def param_sweep_one(Y, params, variable_values, title, xlabel, ylabel):
 	fig = plt.figure(figsize=(12,8))
 	y_avg = Y['avg']
-	if std_devs==1:
+	if param['std_devs']==1:
 		top,btm = Y['top1'], Y['btm1']
-	elif std_devs==2:
+	elif param['std_devs']==2:
 		top,btm = Y['top2'], Y['btm2']
-	elif std_devs==3:
+	elif param['std_devs']==3:
 		top,btm = Y['top3'], Y['btm3']
 	else:
 		assert(False) #unrecognized # std_devs
@@ -70,7 +70,7 @@ def finish_plot(params, title, xlabel, ylabel):
 	
 	if params['save_fig']:
 		title = params['out_dir']+util.timestamp()+'_'+title+'.png'
-		plt.savefig(title)
+		plt.savefig(title,dpi=params['dpi'])
 	else:
 		plt.show()
 	plt.clf()
