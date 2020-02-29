@@ -7,7 +7,7 @@ from copy import deepcopy
 params = ({'experiment':'hist', 'repeats':10, 'time':100, 'timestamp':util.timestamp(), 
 	'NAD':1000, 'PARG':200, 'DNA': 20, 'PARP':20,
 	'base_fwd':1.0E+8, 'base_rev':1.0E-2, 'catalysis_rate':1.0E+8, 'cut_rate':1.0E-8,
-	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':False, 'dpi':300, 'std_devs':3})
+	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':True, 'dpi':300, 'std_devs':3})
 
 
 def main():
