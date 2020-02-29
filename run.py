@@ -92,7 +92,7 @@ def run_sim(params):
 	for rate in ['base_rate','base_fwd','catalysis_rate','cut_rate','elong_boost']:
 		model = model.replace("'" + rate + "' _", "'" + rate + "' " + params[rate])
 
-	model = model.replace("mod: ([E] [mod] _ )=0", "mod: ([E] [mod] " + str(params['time'] + 1) + " )=0")
+	model = model.replace("mod: ([E] [mod] _ )=0", "mod: ([E] [mod] " + str(params['time']) + " )=0")
 
 	client.add_model_string(model)
 	client.project_parse()
