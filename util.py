@@ -5,7 +5,7 @@ import numpy as np
 
 
 def pickle_it(params, data):
-	with open(params['out_dir'] + '/pickles/' + timestamp() + '.pickle','wb') as file:
+	with open(params[0]['out_dir'] + '/pickles/' + timestamp() + '.pickle','wb') as file:
 		data = {'data':data, 'params':params}
 		pickle.dump(data, file) 
 
@@ -35,7 +35,7 @@ def rng(x):
     return range(len(x))
 
 def avg(x):
-	return sum(x)/len(x)
+	return sum(x)/len(x) if len(x)!=0 else 0
 
 def avg_by_key(X,key):
 	summ = 0
