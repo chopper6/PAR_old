@@ -30,11 +30,11 @@ def hist_first_and_last(data, params, feature_names, labels):
 def param_sweep_one(Y, params, variable_values, title, xlabel, ylabel):
 	fig = plt.figure(figsize=(12,8))
 	y_avg = Y['avg']
-	if param['std_devs']==1:
+	if params['std_devs']==1:
 		top,btm = Y['top1'], Y['btm1']
-	elif param['std_devs']==2:
+	elif params['std_devs']==2:
 		top,btm = Y['top2'], Y['btm2']
-	elif param['std_devs']==3:
+	elif params['std_devs']==3:
 		top,btm = Y['top3'], Y['btm3']
 	else:
 		assert(False) #unrecognized # std_devs
