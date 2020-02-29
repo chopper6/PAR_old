@@ -92,7 +92,7 @@ def run_sim(params):
 
 	client.add_model_string(model)
 	client.project_parse()
-	sim_params = kappy.SimulationParameter(pause_condition="[T] > " + str(params['time']),plot_period=params['iterations'])
+	sim_params = kappy.SimulationParameter(pause_condition="[T] > " + str(params['time']),plot_period=params['time'])
 	client.simulation_start(sim_params)
 	client.wait_for_simulation_stop()
 	results = client.simulation_plot()
