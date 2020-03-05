@@ -58,6 +58,7 @@ def extract_stats(data, feature_names, sshot):
 		if feat != []:
 
 			data[name]['avg'] += [util.avg(feat)]
+			data[name]['var'] += [util.var(feat)]
 			if util.avg(feat) != 0:
 				iod = util.var(feat)/util.avg(feat)
 			else:

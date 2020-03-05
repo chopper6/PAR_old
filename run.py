@@ -46,23 +46,27 @@ def hist():
 def sweep():
 	# compares many parameters and averages each over many runs
 	print("\nRunning parameter sweep with repeats.\n")
-	#NADs = [(5**i) for i in range(2,6)]
-	PARGs = [(2**i) for i in range(1,6)]
+	NADs = [(5**i) for i in range(2,6)]
+	#PARGs = [(10**i) for i in range(0,3)]
+	#PARGs = [(10**i) for i in range(-10,-5)]
+	
 	all_params = []
 
 	feature_names = ['size', 'branching ratio']
 
 	stats = {'avg':[], 'std':[],'top1':[], 'top2':[],'top3':[], 'btm1':[],'btm2':[],'btm3':[]}
-	merged_data = {n:{'avg':deepcopy(stats), 'max':deepcopy(stats), 'iod':deepcopy(stats),'1:2':deepcopy(stats)} for n in feature_names}
+	merged_data = {n:{'avg':deepcopy(stats), 'var':deepcopy(stats), 'max':deepcopy(stats), 'iod':deepcopy(stats),'1:2':deepcopy(stats)} for n in feature_names}
 
 
 	shots = []
-	for i in rng(PARGs):
-		#params['NAD'] = NADs[i]
-		#print("[NAD] = ",NADs[i])
-		params['PARG'] = PARGs[i]
-		print("[PARG] = ",PARGs[i])
-		repeats_data = {n:{'avg':[], 'max':[], 'iod':[],'1:2':[]} for n in feature_names}
+	for i in rng(NADs):
+		params['NAD'] = NADs[i]
+		print("[NAD] = ",NADs[i])
+		#params['PARG'] = PARGs[i]
+		#print("[PARG] = ",PARGs[i])
+		#params['cut_rate'] = PARGs[i]
+		#print("cut_rate = ",PARGs[i])
+		repeats_data = {n:{'avg':[],'var':[], 'max':[], 'iod':[],'1:2':[]} for n in feature_names}
 		# Format: data[feature_name][stat]. Example: data['size']['avg']
 
 		for r in range(params['repeats']):
@@ -75,8 +79,8 @@ def sweep():
 		
 	util.pickle_it(all_params, merged_data) 
 
-	#plot.param_sweep(merged_data,params,NADs,'[NAD]',feature_names) #features * stats imgs
-	plot.param_sweep(merged_data,params,PARGs,'[PARG]',feature_names) #features * stats imgs
+	plot.param_sweep(merged_data,params,NADs,'[NAD]',feature_names) #features * stats imgs
+	#plot.param_sweep(merged_data,params,PARGs,'PARG rate',feature_names) #features * stats imgs
 
 
 ###################################### KAPPY ###############################################
