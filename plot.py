@@ -7,9 +7,6 @@ import numpy as np
 from util import rng
 
 
-# TODO: 
-# curr have one S plot, could allow for mult
-
 COLORS = ['green','red','blue','purple','cyan','orange','brown','magenta','yellow','grey']
 MARKERS = ['o', '^','D']
 plt.rcParams["font.family"] = "serif"
@@ -27,6 +24,8 @@ def hist_first_and_last(data, params, feature_names, labels):
 
 
 def param_sweep_one(Y, params, variable_values, title, xlabel, ylabel, loglog=True):
+	#print("\nPLOT for %s \n Y, variable_values" %ylabel, Y, variable_values)
+	#print("Yavg: ", Y['avg'])
 	fig = plt.figure(figsize=(12,8))
 	y_avg = Y['avg']
 	if params['std_devs']==1:

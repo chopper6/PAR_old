@@ -83,10 +83,14 @@ def merge_repeats(merged_data, repeats_data, feature_names, CI=False):
 			#merged_data[name][metric]['avg'] = util.avg(repeats_data[name][metric])
 
 			a = np.array(repeats_data[name][metric])
-			mean = np.mean(a)
-			merged_data[name][metric]['avg'] += [mean]
+			if a.size != 0:
+				mean = np.mean(a)
+				std = np.std(a)
+			else:
+				mean, std = 0,0
 
-			merged_data[name][metric]['std'] += [np.std(a)]
+			merged_data[name][metric]['avg'] += [mean]
+			merged_data[name][metric]['std'] += [std]
 			#print('avg, std', merged_data[name][metric]['avg'],merged_data[name][metric]['std'],a,'\n')
 
 			if CI:

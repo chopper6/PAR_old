@@ -46,7 +46,8 @@ def hist():
 def sweep():
 	# compares many parameters and averages each over many runs
 	print("\nRunning parameter sweep with repeats.\n")
-	NADs = [(10**i) for i in range(2,7)]
+	NADs = [(10**i) for i in range(2,6)]
+	#PARGs = [(2**i) for i in range(0,9)]
 	all_params = []
 
 	feature_names = ['size', 'branching ratio']
@@ -56,9 +57,11 @@ def sweep():
 
 
 	shots = []
-	for i in rng(NADs):
+	for i in rng(NADs): #PARGs):
 		params['NAD'] = NADs[i]
 		print("[NAD] = ",NADs[i])
+		#params['PARG'] = PARGs[i]
+		#print("[PARG] = ",PARGs[i])
 		repeats_data = {n:{'avg':[], 'max':[], 'iod':[],'1:2':[]} for n in feature_names}
 		# Format: data[feature_name][stat]. Example: data['size']['avg']
 
@@ -72,7 +75,8 @@ def sweep():
 		
 	util.pickle_it(all_params, merged_data) 
 
-	plot.param_sweep(merged_data,params,NADs,'NAD',feature_names) #features * stats imgs
+	plot.param_sweep(merged_data,params,NADs,'[NAD]',feature_names) #features * stats imgs
+	#plot.param_sweep(merged_data,params,PARGs,'[PARG]',feature_names) #features * stats imgs
 
 
 ###################################### KAPPY ###############################################
