@@ -46,8 +46,8 @@ def hist():
 def sweep():
 	# compares many parameters and averages each over many runs
 	print("\nRunning parameter sweep with repeats.\n")
-	NADs = [(10**i) for i in range(2,6)]
-	#PARGs = [(2**i) for i in range(0,9)]
+	#NADs = [(5**i) for i in range(2,6)]
+	PARGs = [(2**i) for i in range(1,6)]
 	all_params = []
 
 	feature_names = ['size', 'branching ratio']
@@ -57,11 +57,11 @@ def sweep():
 
 
 	shots = []
-	for i in rng(NADs): #PARGs):
-		params['NAD'] = NADs[i]
-		print("[NAD] = ",NADs[i])
-		#params['PARG'] = PARGs[i]
-		#print("[PARG] = ",PARGs[i])
+	for i in rng(PARGs):
+		#params['NAD'] = NADs[i]
+		#print("[NAD] = ",NADs[i])
+		params['PARG'] = PARGs[i]
+		print("[PARG] = ",PARGs[i])
 		repeats_data = {n:{'avg':[], 'max':[], 'iod':[],'1:2':[]} for n in feature_names}
 		# Format: data[feature_name][stat]. Example: data['size']['avg']
 
@@ -75,8 +75,8 @@ def sweep():
 		
 	util.pickle_it(all_params, merged_data) 
 
-	plot.param_sweep(merged_data,params,NADs,'[NAD]',feature_names) #features * stats imgs
-	#plot.param_sweep(merged_data,params,PARGs,'[PARG]',feature_names) #features * stats imgs
+	#plot.param_sweep(merged_data,params,NADs,'[NAD]',feature_names) #features * stats imgs
+	plot.param_sweep(merged_data,params,PARGs,'[PARG]',feature_names) #features * stats imgs
 
 
 ###################################### KAPPY ###############################################
@@ -93,16 +93,22 @@ def run_sim(params):
 	for rate in ['base_rev','base_fwd','catalysis_rate','cut_rate']:
 		model = model.replace("'" + rate + "' _", "'" + rate + "' " + str(params[rate]))
 
-	model = model.replace("mod: ([E] [mod] _ )=0", "mod: ([E] [mod] " + str(params['time']) + " )=0")
+	model = model.replace("mod: ([E] [mod] _ )=0", "mod: ([E] [mod] " + str(params['time']/100) + " )=0")
 
 	client.add_model_string(model)
 	client.project_parse()
-	sim_params = kappy.SimulationParameter(pause_condition="[T] > " + str(params['time']),plot_period=params['time'])
+	sim_params = kappy.SimulationParameter(pause_condition="[T] > " + str(params['time']),plot_period=params['time']/10)
 	client.simulation_start(sim_params)
 	client.wait_for_simulation_stop()
 	results = client.simulation_plot()
 	snaps = client.simulation_snapshots()
 	snap  = client.simulation_snapshot(snaps['snapshot_ids'][0])
+
+	#for i in rng(snaps['snapshot_ids']):
+	#	snap  = client.simulation_snapshot(snaps['snapshot_ids'][i])
+	#	if snap != []:
+	#		break
+
 	client.simulation_delete()
 	client.shutdown()
 

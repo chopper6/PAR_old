@@ -70,8 +70,8 @@ def finish_plot(params, title, xlabel, ylabel):
 		cut = 80
 		plt.title('Parameters: ' + str(params)[:cut] + '\n' + str(params)[cut:2*cut] 
 			+ '\n' + str(params)[2*cut:3*cut] + '\n' + str(params)[3*cut:],fontsize=10)
-	else:
-		plt.title(title,fontsize=18) 
+	#else:
+	#	plt.title(title,fontsize=18) 
 	#fig.tight_layout()
 	
 	if params['save_fig']:
