@@ -26,11 +26,14 @@ def hist_first_and_last(data, params, feature_names, labels):
 		finish_plot(params,'histo_' + feature, feature,'counts')
 
 
-def param_sweep_one(Y, params, variable_values, title, xlabel, ylabel):
+def param_sweep_one(Y, params, variable_values, title, xlabel, ylabel, loglog=True):
 	fig = plt.figure(figsize=(12,8))
 	y_avg = Y['avg']
 	if params['std_devs']==1:
-		top,btm = Y['top1'], Y['btm1']
+		top, btm = np.add(Y['avg'],Y['std']), np.subtract(Y['avg'],Y['std'])
+		#top, btm= Y['avg'] + Y['std'], Y['avg']- Y['std']
+	#elif params['std_devs']==1:
+	#	top,btm = Y['top1'], Y['btm1']
 	elif params['std_devs']==2:
 		top,btm = Y['top2'], Y['btm2']
 	elif params['std_devs']==3:
@@ -38,7 +41,11 @@ def param_sweep_one(Y, params, variable_values, title, xlabel, ylabel):
 	else:
 		assert(False) #unrecognized # std_devs
 
-	plt.plot(variable_values,y_avg,alpha=.8, linewidth=2, color='blue')
+	if loglog:
+		plt.loglog(variable_values,y_avg,alpha=.8, linewidth=2, color='blue')
+	else:
+		plt.plot(variable_values,y_avg,alpha=.8, linewidth=2, color='blue')
+	
 	plt.fill_between(variable_values,top,btm,alpha=.2, color='blue')
 
 	finish_plot(params,'Splot_' + title, xlabel, ylabel)

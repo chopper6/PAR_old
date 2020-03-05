@@ -25,7 +25,7 @@ def get_features(snap) :
 		info = {}
 
 		size = len(graph[1])
-		if size != 1:
+		if size > 1:
 			info['size'] = len(graph[1]) # number of agents
 			info['number'] = graph[0] #number of that kind of graph
 			info['branching ratio'] = get_branch_number(graph)/info['size']
@@ -58,7 +58,7 @@ def extract_stats(data, feature_names, sshot):
 		if feat != []:
 
 			data[name]['avg'] += [util.avg(feat)]
-			if util.avg != 0:
+			if util.avg(feat) != 0:
 				iod = util.var(feat)/util.avg(feat)
 			else:
 				iod = 0
@@ -73,9 +73,10 @@ def extract_stats(data, feature_names, sshot):
 			else: 
 				ratio = (max1 - max2)/max1
 			data[name]['1:2'] += [ratio]
+			#print("DATA %s" %(name), data[name])
 
 
-def merge_repeats(merged_data, repeats_data, feature_names):
+def merge_repeats(merged_data, repeats_data, feature_names, CI=False):
 	for name in feature_names:
 		for metric in repeats_data[name].keys():
 
@@ -85,26 +86,30 @@ def merge_repeats(merged_data, repeats_data, feature_names):
 			mean = np.mean(a)
 			merged_data[name][metric]['avg'] += [mean]
 
+			merged_data[name][metric]['std'] += [np.std(a)]
+			#print('avg, std', merged_data[name][metric]['avg'],merged_data[name][metric]['std'],a,'\n')
 
-			conf_interval1 = st.t.interval(0.68, len(a)-1, loc=mean, scale=st.sem(a)) #1 standard devs
-			conf_interval2 = st.t.interval(0.95, len(a)-1, loc=mean, scale=st.sem(a)) #2 standard devs
-			conf_interval3 = st.t.interval(0.997, len(a)-1, loc=mean, scale=st.sem(a)) #3 standard devs
+			if CI:
 
-			intervals, stats = [conf_interval1, conf_interval2, conf_interval3], [['top1','btm1'],['top2','btm2'],['top3','btm3']]
-			for i in util.rng(intervals):
-				interval, stat = intervals[i], stats[i]
-				a_trimd=[]
-				for ele in a:
-					if ele > interval[0] and ele < interval[1]:
-						a_trimd+=[ele] 
+				conf_interval1 = st.t.interval(0.68, len(a)-1, loc=mean, scale=st.sem(a)) #1 standard devs
+				conf_interval2 = st.t.interval(0.95, len(a)-1, loc=mean, scale=st.sem(a)) #2 standard devs
+				conf_interval3 = st.t.interval(0.997, len(a)-1, loc=mean, scale=st.sem(a)) #3 standard devs
 
-				if np.count_nonzero(a_trimd) == 0:
-					conf_min, conf_max = 0,0
-				else:
-					conf_min, conf_max = min(a_trimd), max(a_trimd)
-				merged_data[name][metric][stat[0]] += [conf_max]
-				merged_data[name][metric][stat[1]] += [conf_min]
+				intervals, stats = [conf_interval1, conf_interval2, conf_interval3], [['top1','btm1'],['top2','btm2'],['top3','btm3']]
+				for i in util.rng(intervals):
+					interval, stat = intervals[i], stats[i]
+					a_trimd=[]
+					for ele in a:
+						if ele > interval[0] and ele < interval[1]:
+							a_trimd+=[ele] 
 
-			#print('features:',metric,merged_data[name][metric])
+					if np.count_nonzero(a_trimd) == 0:
+						conf_min, conf_max = 0,0
+					else:
+						conf_min, conf_max = min(a_trimd), max(a_trimd)
+					merged_data[name][metric][stat[0]] += [conf_max]
+					merged_data[name][metric][stat[1]] += [conf_min]
+
+				#print('features:',metric,merged_data[name][metric])
 
 

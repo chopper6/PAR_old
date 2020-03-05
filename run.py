@@ -3,12 +3,7 @@ from util import rng
 import kappy
 from copy import deepcopy
 
-
-params = ({'experiment':'hist', 'repeats':40, 'time':100, 'timestamp':util.timestamp(), 
-	'NAD':1000, 'PARG':200, 'DNA': 20, 'PARP':20,
-	'base_fwd':1.0E+8, 'base_rev':1.0E-2, 'catalysis_rate':1.0E+8, 'cut_rate':1.0E-8,
-	'out_dir':'./output/', 'write_params_on_img':True, 'save_fig':True, 'dpi':300, 'std_devs':2})
-
+from params import params
 
 def main():
 	if params['experiment'] == 'hist':
@@ -26,7 +21,7 @@ def main():
 def hist():
 	print("\nComparing two simulations using histogram.\n")
 	# compares 2 runs, no averaging
-	NADs = [1000,10000]
+	NADs = [1.0E+4,1.0E+5]
 	labels = ['[NAD] = ' + str(NADs[0]), '[NAD] = ' + str(NADs[1])]
 
 	all_params = []
@@ -51,18 +46,19 @@ def hist():
 def sweep():
 	# compares many parameters and averages each over many runs
 	print("\nRunning parameter sweep with repeats.\n")
-	NADs = [2**i for i in range(20)]
+	NADs = [(10**i) for i in range(2,7)]
 	all_params = []
 
 	feature_names = ['size', 'branching ratio']
 
-	stats = {'avg':[], 'top1':[], 'top2':[],'top3':[], 'btm1':[],'btm2':[],'btm3':[]}
+	stats = {'avg':[], 'std':[],'top1':[], 'top2':[],'top3':[], 'btm1':[],'btm2':[],'btm3':[]}
 	merged_data = {n:{'avg':deepcopy(stats), 'max':deepcopy(stats), 'iod':deepcopy(stats),'1:2':deepcopy(stats)} for n in feature_names}
 
 
 	shots = []
 	for i in rng(NADs):
 		params['NAD'] = NADs[i]
+		print("[NAD] = ",NADs[i])
 		repeats_data = {n:{'avg':[], 'max':[], 'iod':[],'1:2':[]} for n in feature_names}
 		# Format: data[feature_name][stat]. Example: data['size']['avg']
 
