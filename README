@@ -3,6 +3,8 @@ PAR Model for MPRI Biochemical Programming 2020
 Usage:
 python3 run.py
 
+modify simulations using params.py
+
 Model:
 base_model.ka is the kappa model called by the python script
 to run it directly in kappa, one needs to replace "_" with variable values
